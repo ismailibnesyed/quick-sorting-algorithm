@@ -351,100 +351,105 @@ function generateQuickSortTrace(initialArray) {
 const TRACER_CODE = {
   cpp: [
     { line: 1, text: 'int partition(vector<int>& arr, int lb, int ub) {' },
-    { line: 2, text: '    int pivot = arr[lb]; // First element as Pivot' },
-    { line: 3, text: '    int i = lb, j = ub;  // i=start, j=end' },
+    { line: 2, text: '    int pivot = arr[lb]; // Step 1: Pick first element as pivot' },
+    { line: 3, text: '    int i = lb, j = ub;  // i = start, j = end' },
     { line: 4, text: '    while (i < j) {' },
-    { line: 5, text: '        while (arr[i] <= pivot && i < ub) i++; // Scan right' },
+    { line: 5, text: '        while (arr[i] <= pivot && i < ub) i++; // Move i right (find > pivot)' },
     { line: 6, text: '            // i stops when arr[i] > pivot' },
-    { line: 7, text: '        while (arr[j] > pivot) j--;            // Scan left' },
+    { line: 7, text: '        while (arr[j] > pivot) j--;            // Move j left (find <= pivot)' },
     { line: 8, text: '            // j stops when arr[j] <= pivot' },
-    { line: 9, text: '        if (i < j)' },
-    { line: 10, text: '            swap(arr[i], arr[j]);' },
+    { line: 9, text: '        if (i < j) // If pointers have not crossed' },
+    { line: 10, text: '            swap(arr[i], arr[j]); // Swap values at i and j' },
     { line: 11, text: '    }' },
-    { line: 12, text: '    swap(arr[lb], arr[j]); // Pivot locks at index j' },
-    { line: 13, text: '    return j;' },
+    { line: 12, text: '    swap(arr[lb], arr[j]); // Pointers crossed: Lock pivot at index j' },
+    { line: 13, text: '    return j; // Return pivot position' },
     { line: 14, text: '}' },
     { line: 15, text: 'void quickSort(vector<int>& arr, int lb, int ub) {' },
     { line: 16, text: '    if (lb < ub) {' },
     { line: 17, text: '        int loc = partition(arr, lb, ub);' },
-    { line: 18, text: '        quickSort(arr, lb, loc - 1); // Left side' },
-    { line: 19, text: '        quickSort(arr, loc + 1, ub); // Right side' },
+    { line: 18, text: '        quickSort(arr, lb, loc - 1); // Sort left side' },
+    { line: 19, text: '        quickSort(arr, loc + 1, ub); // Sort right side' },
     { line: 20, text: '    }' },
     { line: 21, text: '}' }
   ],
   python: [
     { line: 1, text: 'def partition(arr, lb, ub):' },
-    { line: 2, text: '    pivot = arr[lb]  # 1st element as Pivot' },
-    { line: 3, text: '    i, j = lb, ub    # i=start, j=end' },
+    { line: 2, text: '    pivot = arr[lb]  # Step 1: Pick first element as pivot' },
+    { line: 3, text: '    i, j = lb, ub    # i = start, j = end' },
     { line: 4, text: '    while i < j:' },
     { line: 5, text: '        while arr[i] <= pivot and i < ub:' },
-    { line: 6, text: '            i += 1   # Scan right for > pivot' },
+    { line: 6, text: '            i += 1   # Move i right (find > pivot)' },
     { line: 7, text: '        while arr[j] > pivot:' },
-    { line: 8, text: '            j -= 1   # Scan left for <= pivot' },
-    { line: 9, text: '        if i < j:' },
-    { line: 10, text: '            arr[i], arr[j] = arr[j], arr[i]' },
-    { line: 11, text: '    # When pointers cross (i >= j):' },
-    { line: 12, text: '    arr[lb], arr[j] = arr[j], arr[lb]  # Pivot locks at j' },
-    { line: 13, text: '    return j' },
+    { line: 8, text: '            j -= 1   # Move j left (find <= pivot)' },
+    { line: 9, text: '        if i < j:     # If pointers have not crossed' },
+    { line: 10, text: '            arr[i], arr[j] = arr[j], arr[i]  # Swap values at i and j' },
+    { line: 11, text: '    # Pointers crossed: Lock pivot at index j' },
+    { line: 12, text: '    arr[lb], arr[j] = arr[j], arr[lb]' },
+    { line: 13, text: '    return j  # Return pivot position' },
     { line: 14, text: '' },
     { line: 15, text: 'def quick_sort(arr, lb, ub):' },
     { line: 16, text: '    if lb < ub:' },
     { line: 17, text: '        loc = partition(arr, lb, ub)' },
-    { line: 18, text: '        quick_sort(arr, lb, loc - 1)' },
-    { line: 19, text: '        quick_sort(arr, loc + 1, ub)' },
+    { line: 18, text: '        quick_sort(arr, lb, loc - 1)  # Sort left side' },
+    { line: 19, text: '        quick_sort(arr, loc + 1, ub)  # Sort right side' },
     { line: 20, text: '    return arr' },
     { line: 21, text: '' }
   ]
 };
 
 // ============================================================================
-// 3. FULL MULTI-LANGUAGE IMPLEMENTATIONS FOR "CODE" TAB (C++, Python, C#, Java, C, JS)
+// 3. FULL MULTI-LANGUAGE IMPLEMENTATIONS FOR "CODE" TAB (EASY ENGLISH COMMENTS)
 // ============================================================================
 const FULL_LANGUAGE_CODES = {
   cpp: {
     name: 'C++',
     file: 'quicksort.cpp',
     runCmd: 'g++ quicksort.cpp -o quicksort && ./quicksort',
-    code: `// Quick Sort Implementation in C++
+    code: `// Quick Sort Algorithm in C++
 // Complexity: Best/Average = O(n log n), Worst = O(n^2), Space = O(log n)
 #include <iostream>
 #include <vector>
 using namespace std;
 
-// ১. পার্টিশন ফাংশন: পিভট-এর সাপেক্ষে সংখ্যা সাজায়
+// Step 1: Partition function
+// Places the pivot in its correct sorted spot
 int partition(vector<int>& arr, int lb, int ub) {
-    int pivot = arr[lb]; // প্রথম উপাদানকে পিভট ধরি
-    int i = lb;          // শুরুর পয়েন্টার
-    int j = ub;          // শেষের পয়েন্টার
+    int pivot = arr[lb]; // Pick the first element as pivot
+    int i = lb;          // Left pointer starting at lower bound
+    int j = ub;          // Right pointer starting at upper bound
 
     while (i < j) {
-        // পিভট-এর চেয়ে বড় সংখ্যা না পাওয়া পর্যন্ত i ডানে যাবে
+        // Move pointer i to the right while values are <= pivot
         while (arr[i] <= pivot && i < ub) {
             i++;
         }
-        // পিভট-এর ছোট বা সমান সংখ্যা না পাওয়া পর্যন্ত j বামে আসবে
+        // Move pointer j to the left while values are > pivot
         while (arr[j] > pivot) {
             j--;
         }
-        // যদি পয়েন্টার দুটি ক্রস না করে, তবে অদলবদল (swap) করি
+        // If pointers have not crossed, swap elements at i and j
         if (i < j) {
             swap(arr[i], arr[j]);
         }
     }
-    // পয়েন্টার ক্রস করলে পিভট-কে j স্থানে বসাই (পিভট চূড়ান্তভাবে লক হলো)
+    // When pointers cross (i >= j), place pivot at index j
     swap(arr[lb], arr[j]);
-    return j; // পিভটের স্থায়ী ইনডেক্স ফেরত দেওয়া হলো
+    return j; // Return locked pivot position
 }
 
-// ২. মূল রিকার্সিভ কুইক সর্ট ফাংশন
+// Step 2: Recursive Quick Sort function
 void quickSort(vector<int>& arr, int lb, int ub) {
     if (lb < ub) {
-        int loc = partition(arr, lb, ub); // পিভট অবস্থান
-        quickSort(arr, lb, loc - 1);       // বাম সাব-অ্যারে সর্ট
-        quickSort(arr, loc + 1, ub);       // ডান সাব-অ্যারে সর্ট
+        // Partition array and get pivot index
+        int loc = partition(arr, lb, ub);
+
+        // Recursively sort elements before and after pivot
+        quickSort(arr, lb, loc - 1); // Sort left side
+        quickSort(arr, loc + 1, ub); // Sort right side
     }
 }
 
+// Main function to test Quick Sort
 int main() {
     vector<int> arr = {5, 2, 8, 3, 1};
 
@@ -465,40 +470,45 @@ int main() {
     name: 'Python',
     file: 'quicksort.py',
     runCmd: 'python quicksort.py',
-    code: `# Quick Sort Implementation in Python
+    code: `# Quick Sort Algorithm in Python
 # Complexity: Best/Average = O(n log n), Worst = O(n^2), Space = O(log n)
 
+# Step 1: Partition function
+# Places the pivot in its correct sorted spot
 def partition(arr, lb, ub):
-    pivot = arr[lb]  # প্রথম উপাদানকে পিভট ধরি
-    i = lb           # শুরুর পয়েন্টার
-    j = ub           # শেষের পয়েন্টার
+    pivot = arr[lb]  # Pick the first element as pivot
+    i = lb           # Left pointer starting at lower bound
+    j = ub           # Right pointer starting at upper bound
 
     while i < j:
-        # পিভট-এর চেয়ে বড় সংখ্যা না পাওয়া পর্যন্ত i ডানে যাবে
+        # Move pointer i to the right while values are <= pivot
         while arr[i] <= pivot and i < ub:
             i += 1
-        # পিভট-এর ছোট বা সমান সংখ্যা না পাওয়া পর্যন্ত j বামে আসবে
+        # Move pointer j to the left while values are > pivot
         while arr[j] > pivot:
             j -= 1
-        # পয়েন্টার ক্রস না করলে অদলবদল (swap) করি
+        # If pointers have not crossed, swap elements at i and j
         if i < j:
             arr[i], arr[j] = arr[j], arr[i]
 
-    # পয়েন্টার ক্রস করলে পিভট-কে j তম ইনডেক্সে বসাই
+    # When pointers cross (i >= j), place pivot at index j
     arr[lb], arr[j] = arr[j], arr[lb]
-    return j  # পিভটের স্থায়ী অবস্থান ফেরত দিলাম
+    return j  # Return locked pivot position
 
 
+# Step 2: Recursive Quick Sort function
 def quick_sort(arr, lb, ub):
-    """মূল রিকার্সিভ কুইক সর্ট ফাংশন"""
     if lb < ub:
+        # Partition array and get pivot index
         loc = partition(arr, lb, ub)
-        quick_sort(arr, lb, loc - 1)  # বাম অংশ সর্ট
-        quick_sort(arr, loc + 1, ub)  # ডান অংশ সর্ট
+
+        # Recursively sort elements before and after pivot
+        quick_sort(arr, lb, loc - 1)  # Sort left side
+        quick_sort(arr, loc + 1, ub)  # Sort right side
     return arr
 
 
-# টেস্ট ড্রাইভার কোড
+# Main function to test Quick Sort
 if __name__ == '__main__':
     data = [5, 2, 8, 3, 1]
     print("Original Array:", data)
@@ -509,45 +519,50 @@ if __name__ == '__main__':
     name: 'C#',
     file: 'QuickSort.cs',
     runCmd: 'dotnet run (or csc QuickSort.cs && QuickSort.exe)',
-    code: `// Quick Sort Implementation in C# (.NET)
+    code: `// Quick Sort Algorithm in C# (.NET)
 // Complexity: Best/Average = O(n log n), Worst = O(n^2), Space = O(log n)
 using System;
 
 class QuickSortProgram {
-    // ১. পার্টিশন মেথড
+    // Step 1: Partition method
+    // Places the pivot in its correct sorted spot
     static int Partition(int[] arr, int lb, int ub) {
-        int pivot = arr[lb]; // প্রথম উপাদানকে পিভট ধরি
-        int i = lb;          // শুরুর পয়েন্টার
-        int j = ub;          // শেষের পয়েন্টার
+        int pivot = arr[lb]; // Pick the first element as pivot
+        int i = lb;          // Left pointer starting at lower bound
+        int j = ub;          // Right pointer starting at upper bound
 
         while (i < j) {
-            // পিভট-এর চেয়ে বড় সংখ্যা না পাওয়া পর্যন্ত i ডানে যাবে
+            // Move pointer i to the right while values are <= pivot
             while (arr[i] <= pivot && i < ub) i++;
-            // পিভট-এর ছোট বা সমান সংখ্যা না পাওয়া পর্যন্ত j বামে আসবে
+            // Move pointer j to the left while values are > pivot
             while (arr[j] > pivot) j--;
 
+            // If pointers have not crossed, swap elements at i and j
             if (i < j) {
-                // পয়েন্টার ক্রস না করলে swap
                 int temp = arr[i];
                 arr[i] = arr[j];
                 arr[j] = temp;
             }
         }
-        // পিভট-কে তার স্থায়ী ঘরে (j ইনডেক্স) বসানো হলো
+        // When pointers cross (i >= j), place pivot at index j
         arr[lb] = arr[j];
         arr[j] = pivot;
-        return j;
+        return j; // Return locked pivot position
     }
 
-    // ২. রিকার্সিভ কুইক সর্ট
+    // Step 2: Recursive Quick Sort function
     static void QuickSort(int[] arr, int lb, int ub) {
         if (lb < ub) {
+            // Partition array and get pivot index
             int loc = Partition(arr, lb, ub);
-            QuickSort(arr, lb, loc - 1); // বাম পাশ
-            QuickSort(arr, loc + 1, ub); // ডান পাশ
+
+            // Recursively sort elements before and after pivot
+            QuickSort(arr, lb, loc - 1); // Sort left side
+            QuickSort(arr, loc + 1, ub); // Sort right side
         }
     }
 
+    // Main method to test Quick Sort
     static void Main() {
         int[] numbers = { 5, 2, 8, 3, 1 };
         Console.WriteLine("Original: " + string.Join(", ", numbers));
@@ -562,42 +577,50 @@ class QuickSortProgram {
     name: 'Java',
     file: 'QuickSort.java',
     runCmd: 'javac QuickSort.java && java QuickSort',
-    code: `// Quick Sort Implementation in Java
+    code: `// Quick Sort Algorithm in Java
 // Complexity: Best/Average = O(n log n), Worst = O(n^2), Space = O(log n)
 import java.util.Arrays;
 
 public class QuickSort {
-    // ১. পার্টিশন মেথড
+    // Step 1: Partition method
+    // Places the pivot in its correct sorted spot
     static int partition(int[] arr, int lb, int ub) {
-        int pivot = arr[lb]; // ১ম উপাদান পিভট
-        int i = lb;          // শুরুর পয়েন্টার
-        int j = ub;          // শেষের পয়েন্টার
+        int pivot = arr[lb]; // Pick the first element as pivot
+        int i = lb;          // Left pointer starting at lower bound
+        int j = ub;          // Right pointer starting at upper bound
 
         while (i < j) {
+            // Move pointer i to the right while values are <= pivot
             while (arr[i] <= pivot && i < ub) i++;
+            // Move pointer j to the left while values are > pivot
             while (arr[j] > pivot) j--;
 
+            // If pointers have not crossed, swap elements at i and j
             if (i < j) {
                 int temp = arr[i];
                 arr[i] = arr[j];
                 arr[j] = temp;
             }
         }
-        // পিভট-কে সঠিক স্থানে বসানো হলো
+        // When pointers cross (i >= j), place pivot at index j
         arr[lb] = arr[j];
         arr[j] = pivot;
-        return j;
+        return j; // Return locked pivot position
     }
 
-    // ২. রিকার্সিভ কুইক সর্ট
+    // Step 2: Recursive Quick Sort function
     static void quickSort(int[] arr, int lb, int ub) {
         if (lb < ub) {
+            // Partition array and get pivot index
             int loc = partition(arr, lb, ub);
-            quickSort(arr, lb, loc - 1); // বাম অংশ
-            quickSort(arr, loc + 1, ub); // ডান অংশ
+
+            // Recursively sort elements before and after pivot
+            quickSort(arr, lb, loc - 1); // Sort left side
+            quickSort(arr, loc + 1, ub); // Sort right side
         }
     }
 
+    // Main method to test Quick Sort
     public static void main(String[] args) {
         int[] arr = { 5, 2, 8, 3, 1 };
         System.out.println("Original: " + Arrays.toString(arr));
@@ -612,48 +635,67 @@ public class QuickSort {
     name: 'C',
     file: 'quicksort.c',
     runCmd: 'gcc quicksort.c -o quicksort && ./quicksort',
-    code: `// Quick Sort Implementation in C
+    code: `// Quick Sort Algorithm in C
+// Complexity: Best/Average = O(n log n), Worst = O(n^2), Space = O(log n)
 #include <stdio.h>
 
+// Helper function to swap two numbers
 void swap(int* a, int* b) {
     int temp = *a;
     *a = *b;
     *b = temp;
 }
 
+// Step 1: Partition function
+// Places the pivot in its correct sorted spot
 int partition(int arr[], int lb, int ub) {
-    int pivot = arr[lb]; // প্রথম উপাদান পিভট
-    int i = lb;
-    int j = ub;
+    int pivot = arr[lb]; // Pick the first element as pivot
+    int i = lb;          // Left pointer starting at lower bound
+    int j = ub;          // Right pointer starting at upper bound
 
     while (i < j) {
+        // Move pointer i to the right while values are <= pivot
         while (arr[i] <= pivot && i < ub) i++;
+        // Move pointer j to the left while values are > pivot
         while (arr[j] > pivot) j--;
+
+        // If pointers have not crossed, swap elements at i and j
         if (i < j) {
             swap(&arr[i], &arr[j]);
         }
     }
+    // When pointers cross (i >= j), place pivot at index j
     swap(&arr[lb], &arr[j]);
-    return j;
+    return j; // Return locked pivot position
 }
 
+// Step 2: Recursive Quick Sort function
 void quickSort(int arr[], int lb, int ub) {
     if (lb < ub) {
+        // Partition array and get pivot index
         int loc = partition(arr, lb, ub);
-        quickSort(arr, lb, loc - 1);
-        quickSort(arr, loc + 1, ub);
+
+        // Recursively sort elements before and after pivot
+        quickSort(arr, lb, loc - 1); // Sort left side
+        quickSort(arr, loc + 1, ub); // Sort right side
     }
 }
 
+// Main function to test Quick Sort
 int main() {
     int arr[] = { 5, 2, 8, 3, 1 };
     int n = sizeof(arr) / sizeof(arr[0]);
 
+    printf("Original Array: ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+    printf("\n");
+
     quickSort(arr, 0, n - 1);
 
-    printf("Sorted Array: ");
+    printf("Sorted Array:   ");
     for (int i = 0; i < n; i++) printf("%d ", arr[i]);
-    printf("\\n");
+    printf("\n");
+
     return 0;
 }`
   },
@@ -661,41 +703,52 @@ int main() {
     name: 'JavaScript',
     file: 'quicksort.js',
     runCmd: 'node quicksort.js',
-    code: `// Quick Sort Implementation in JavaScript (Node.js)
+    code: `// Quick Sort Algorithm in JavaScript (Node.js)
+// Complexity: Best/Average = O(n log n), Worst = O(n^2), Space = O(log n)
+
+// Step 1: Partition function
+// Places the pivot in its correct sorted spot
 function partition(arr, lb, ub) {
-  const pivot = arr[lb]; // ১ম উপাদান পিভট
-  let i = lb;
-  let j = ub;
+  const pivot = arr[lb]; // Pick the first element as pivot
+  let i = lb;            // Left pointer starting at lower bound
+  let j = ub;            // Right pointer starting at upper bound
 
   while (i < j) {
+    // Move pointer i to the right while values are <= pivot
     while (arr[i] <= pivot && i < ub) i++;
+    // Move pointer j to the left while values are > pivot
     while (arr[j] > pivot) j--;
+
+    // If pointers have not crossed, swap elements at i and j
     if (i < j) {
-      [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
   }
-  [arr[lb], arr[j]] = [arr[j], arr[lb]]; // Pivot locked
-  return j;
+  // When pointers cross (i >= j), place pivot at index j
+  [arr[lb], arr[j]] = [arr[j], arr[lb]];
+  return j; // Return locked pivot position
 }
 
+// Step 2: Recursive Quick Sort function
 function quickSort(arr, lb = 0, ub = arr.length - 1) {
   if (lb < ub) {
+    // Partition array and get pivot index
     const loc = partition(arr, lb, ub);
-    quickSort(arr, lb, loc - 1);
-    quickSort(arr, loc + 1, ub);
+
+    // Recursively sort elements before and after pivot
+    quickSort(arr, lb, loc - 1); // Sort left side
+    quickSort(arr, loc + 1, ub); // Sort right side
   }
   return arr;
 }
 
+// Main execution to test Quick Sort
 const arr = [5, 2, 8, 3, 1];
-console.log("Original:", arr);
-console.log("Sorted:  ", quickSort(arr));`
+console.log("Original Array:", arr);
+console.log("Sorted Array:  ", quickSort(arr));`
   }
 };
 
-// ============================================================================
-// 4. INTERACTIVE BEGINNER QUIZ QUESTIONS
-// ============================================================================
 const QUIZ_QUESTIONS = [
   {
     id: 1,
@@ -746,8 +799,8 @@ export default function Quick_sort() {
   // Navigation Tab State
   const [activeTab, setActiveTab] = useState('visualizer'); // 'visualizer' | 'lesson' | 'code'
 
-  // Language State: 'bn' (Bangla) or 'en' (English)
-  const [lang, setLang] = useState('bn');
+  // Language State: Default to 'en' as requested!
+  const [lang, setLang] = useState('en');
 
   // Selected Code Language in Code Tab
   const [selectedCodeLang, setSelectedCodeLang] = useState('cpp'); // 'cpp' | 'python' | 'csharp' | 'java' | 'c' | 'js'
@@ -755,8 +808,8 @@ export default function Quick_sort() {
   // Live tracer code language (visualizer side panel)
   const [tracerLang, setTracerLang] = useState('cpp'); // 'cpp' | 'python'
 
-  // Array & Trace State
-  const [inputArray, setInputArray] = useState([5, 2, 8, 3, 1]); // Beginner 5 items!
+  // Array & Trace State (Beginner 5 items default)
+  const [inputArray, setInputArray] = useState([5, 2, 8, 3, 1]);
   const [customInputText, setCustomInputText] = useState('5, 2, 8, 3, 1');
   const [inputError, setInputError] = useState('');
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
@@ -780,7 +833,7 @@ export default function Quick_sort() {
     setToastMessage(msg);
     setTimeout(() => {
       setToastMessage((prev) => (prev === msg ? null : prev));
-    }, 2400);
+    }, 2200);
   }, []);
 
   // Step navigation functions
@@ -901,27 +954,27 @@ export default function Quick_sort() {
   return (
     <div className="min-h-screen bg-[#070b14] text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
       {/* ================================================================== */}
-      {/* 1. TOP HEADER (CLEAN, COMPACT, NO CSE 281, NO SOUND, NO ZIP)      */}
+      {/* 1. TOP HEADER (SLIM, SLEEK, NO CSE 281, NO SOUND, NO ZIP)         */}
       {/* ================================================================== */}
-      <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 px-3 sm:px-6 py-2.5">
+      <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 px-3 sm:px-6 py-2">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
           {/* Logo & Title */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-amber-500 flex items-center justify-center shadow-md shadow-indigo-500/20 shrink-0">
-              <Zap className="w-4 h-4 text-white" />
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-amber-500 flex items-center justify-center shadow-md shrink-0">
+              <Zap className="w-3.5 h-3.5 text-white" />
             </div>
-            <h1 className="text-base sm:text-lg font-extrabold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-amber-200 bg-clip-text text-transparent whitespace-nowrap">
+            <h1 className="text-sm sm:text-base font-extrabold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-amber-200 bg-clip-text text-transparent whitespace-nowrap">
               {lang === 'bn' ? 'কুইক সর্ট' : 'Quick Sort'}
             </h1>
           </div>
 
           {/* Navigation Tabs (Pill style) */}
-          <nav className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+          <nav className="flex items-center gap-1 bg-slate-950 p-0.5 rounded-xl border border-slate-800">
             <button
               onClick={() => setActiveTab('visualizer')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 activeTab === 'visualizer'
-                  ? 'bg-indigo-600 text-white shadow-md'
+                  ? 'bg-indigo-600 text-white shadow-sm'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -930,9 +983,9 @@ export default function Quick_sort() {
             </button>
             <button
               onClick={() => setActiveTab('lesson')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 activeTab === 'lesson'
-                  ? 'bg-indigo-600 text-white shadow-md'
+                  ? 'bg-indigo-600 text-white shadow-sm'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -941,9 +994,9 @@ export default function Quick_sort() {
             </button>
             <button
               onClick={() => setActiveTab('code')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 activeTab === 'code'
-                  ? 'bg-indigo-600 text-white shadow-md'
+                  ? 'bg-indigo-600 text-white shadow-sm'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -959,10 +1012,10 @@ export default function Quick_sort() {
               setLang(nextLang);
               triggerToast(nextLang === 'bn' ? 'বাংলা চালু' : 'Switched to English');
             }}
-            className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition shrink-0"
-            title="Toggle Language (বাংলা / English)"
+            className="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition shrink-0"
+            title="Toggle Language"
           >
-            <Globe className="w-3.5 h-3.5 text-sky-400" />
+            <Globe className="w-3 h-3 text-sky-400" />
             <span>{lang === 'bn' ? 'বাং' : 'EN'}</span>
           </button>
         </div>
@@ -971,16 +1024,16 @@ export default function Quick_sort() {
       {/* ================================================================== */}
       {/* 2. MAIN WORKSPACE CONTENT                                          */}
       {/* ================================================================== */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-4">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-3">
         {/* ================================================================ */}
-        {/* TAB 1: INTERACTIVE VISUALIZER                                    */}
+        {/* TAB 1: INTERACTIVE VISUALIZER (COMPACT, MINIMAL SCROLL)          */}
         {/* ================================================================ */}
         {activeTab === 'visualizer' && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {/* UNIFIED COMPACT CONTROL CENTER (SIDE-BY-SIDE MERGED) */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3 sm:p-4 shadow-lg space-y-3">
-              {/* Row 1: Array Input + Presets (Side by Side) */}
-              <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-2.5 sm:p-3 shadow-md space-y-2">
+              {/* Row 1: Array Input + Presets */}
+              <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5">
                 {/* Input form */}
                 <form onSubmit={handleApplyCustomArray} className="flex items-center gap-2 flex-1 max-w-md">
                   <div className="relative flex-1">
@@ -991,13 +1044,13 @@ export default function Quick_sort() {
                       type="text"
                       value={customInputText}
                       onChange={(e) => setCustomInputText(e.target.value)}
-                      className="w-full pl-14 pr-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm font-mono text-white focus:outline-none focus:border-indigo-500"
+                      className="w-full pl-14 pr-3 py-1 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm font-mono text-white focus:outline-none focus:border-indigo-500"
                       placeholder="5, 2, 8, 3, 1"
                     />
                   </div>
                   <button
                     type="submit"
-                    className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition shrink-0"
+                    className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition shrink-0"
                   >
                     {lang === 'bn' ? 'লোড' : 'Load'}
                   </button>
@@ -1051,14 +1104,14 @@ export default function Quick_sort() {
                 </div>
               )}
 
-              {/* Row 2: Playback Controls + Speed + Counter (Side by Side) */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-slate-800/80">
+              {/* Row 2: Playback Controls + Speed + Counter */}
+              <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-800/80">
                 {/* Transport Buttons */}
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={resetVisualizer}
                     title="Reset (Key: R)"
-                    className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+                    className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                   </button>
@@ -1066,9 +1119,9 @@ export default function Quick_sort() {
                     onClick={stepBackward}
                     disabled={currentStepIdx === 0}
                     title="Previous (Key: Left Arrow)"
-                    className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-white font-semibold text-xs border border-slate-700 transition flex items-center gap-1"
+                    className="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-white font-semibold text-xs border border-slate-700 transition flex items-center gap-1"
                   >
-                    <SkipBack className="w-3.5 h-3.5" />
+                    <SkipBack className="w-3 h-3" />
                     <span>{lang === 'bn' ? 'আগের' : 'Prev'}</span>
                   </button>
                   <button
@@ -1079,7 +1132,7 @@ export default function Quick_sort() {
                       setIsPlaying(!isPlaying);
                     }}
                     title="Play / Pause (Key: Spacebar)"
-                    className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5 min-w-[90px] justify-center"
+                    className="px-3.5 py-1 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5 min-w-[85px] justify-center"
                   >
                     {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
                     <span>{isPlaying ? (lang === 'bn' ? 'থামুন' : 'Pause') : (lang === 'bn' ? 'চালান' : 'Play')}</span>
@@ -1091,15 +1144,15 @@ export default function Quick_sort() {
                     }}
                     disabled={currentStepIdx >= steps.length - 1}
                     title="Next (Key: Right Arrow)"
-                    className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-white font-semibold text-xs border border-slate-700 transition flex items-center gap-1"
+                    className="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-white font-semibold text-xs border border-slate-700 transition flex items-center gap-1"
                   >
                     <span>{lang === 'bn' ? 'পরের' : 'Next'}</span>
-                    <SkipForward className="w-3.5 h-3.5" />
+                    <SkipForward className="w-3 h-3" />
                   </button>
                 </div>
 
                 {/* Speed buttons & Step Counter */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <div className="flex items-center gap-1 bg-slate-950 p-0.5 rounded-xl border border-slate-800">
                     {[
                       { ms: 1200, label: '0.6x' },
@@ -1109,7 +1162,7 @@ export default function Quick_sort() {
                       <button
                         key={spd.ms}
                         onClick={() => setSpeedMs(spd.ms)}
-                        className={`px-2 py-0.5 text-[11px] font-mono rounded-lg transition ${
+                        className={`px-2 py-0.5 text-[10px] font-mono rounded-lg transition ${
                           speedMs === spd.ms
                             ? 'bg-indigo-600 text-white font-bold'
                             : 'text-slate-400 hover:text-white'
@@ -1120,13 +1173,13 @@ export default function Quick_sort() {
                     ))}
                   </div>
 
-                  <div className="font-mono text-xs bg-slate-950 px-2.5 py-1 rounded-xl border border-slate-800 text-slate-300">
+                  <div className="font-mono text-xs bg-slate-950 px-2 py-0.5 rounded-xl border border-slate-800 text-slate-300">
                     <strong className="text-white">{currentStepIdx}</strong> / {steps.length - 1}
                   </div>
                 </div>
 
                 {/* Timeline Scrubber */}
-                <div className="w-full flex items-center gap-2 pt-1">
+                <div className="w-full flex items-center gap-2 pt-0.5">
                   <input
                     type="range"
                     min={0}
@@ -1136,237 +1189,251 @@ export default function Quick_sort() {
                       setIsPlaying(false);
                       setCurrentStepIdx(Number(e.target.value));
                     }}
-                    className="w-full accent-indigo-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
+                    className="w-full accent-indigo-500 h-1 bg-slate-800 rounded-lg cursor-pointer"
                   />
                 </div>
               </div>
             </div>
 
-            {/* MAIN 12-COLUMN STAGE & LIVE TRACER */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-              {/* LEFT 7 COLS: TEACHER NARRATOR + BARS CANVAS */}
-              <div className="lg:col-span-7 flex flex-col gap-4">
-                {/* Short, Easy Teacher Narrator Card */}
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md relative overflow-hidden">
-                  <div
-                    className={`absolute left-0 top-0 bottom-0 w-1.5 ${
-                      currentStep.phase === 'SWAP_IJ' || currentStep.phase === 'SWAP_PIVOT'
-                        ? 'bg-amber-500'
-                        : currentStep.phase === 'COMPLETED'
-                        ? 'bg-emerald-500'
-                        : 'bg-indigo-500'
-                    }`}
-                  />
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-mono px-2 py-0.5 rounded-md font-bold uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                          {currentStep.phase}
-                        </span>
-                        <span className="text-xs font-mono text-slate-400">
-                          {currentStep.lb !== null ? `Subarray: [${currentStep.lb} .. ${currentStep.ub}]` : 'Done'}
-                        </span>
+            {/* ============================================================ */}
+            {/* SIDE-BY-SIDE: NARRATOR (ARRAY READY) + RULES (PASHA-PASHI!)   */}
+            {/* ============================================================ */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
+              {/* Left Box: Array Ready to Sort / Current Step Narrator (7 cols) */}
+              <div className="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-md relative overflow-hidden flex flex-col justify-between">
+                <div
+                  className={`absolute left-0 top-0 bottom-0 w-1 ${
+                    currentStep.phase === 'SWAP_IJ' || currentStep.phase === 'SWAP_PIVOT'
+                      ? 'bg-amber-500'
+                      : currentStep.phase === 'COMPLETED'
+                      ? 'bg-emerald-500'
+                      : 'bg-indigo-500'
+                  }`}
+                />
+                <div className="flex items-start justify-between gap-2.5">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md font-bold uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                        {currentStep.phase}
+                      </span>
+                      <span className="text-xs font-mono text-slate-400">
+                        {currentStep.lb !== null ? `Subarray: [${currentStep.lb} .. ${currentStep.ub}]` : 'Done'}
+                      </span>
+                    </div>
+                    <h2 className="text-sm font-bold text-white">
+                      {lang === 'bn' ? currentStep.titleBn : currentStep.title}
+                    </h2>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      {lang === 'bn' ? currentStep.explanationBn : currentStep.explanation}
+                    </p>
+
+                    {/* 1-Line Easy Tip */}
+                    {(currentStep.tip || currentStep.tipBn) && (
+                      <div className="mt-1.5 pt-1.5 border-t border-slate-800/80 flex items-center gap-1.5 text-xs text-amber-300">
+                        <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                        <span>{lang === 'bn' ? currentStep.tipBn : currentStep.tip}</span>
                       </div>
-                      <h2 className="text-sm sm:text-base font-bold text-white">
-                        {lang === 'bn' ? currentStep.titleBn : currentStep.title}
-                      </h2>
-                      <p className="text-xs text-slate-300 leading-relaxed">
-                        {lang === 'bn' ? currentStep.explanationBn : currentStep.explanation}
-                      </p>
-
-                      {/* 1-Line Easy Tip */}
-                      {(currentStep.tip || currentStep.tipBn) && (
-                        <div className="mt-2 pt-2 border-t border-slate-800/80 flex items-center gap-1.5 text-xs text-amber-300">
-                          <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                          <span>{lang === 'bn' ? currentStep.tipBn : currentStep.tip}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 shrink-0 font-mono text-center">
-                      <div className="text-[10px] text-slate-500 uppercase">Check</div>
-                      <div className="text-xs font-bold text-amber-400">{currentStep.formula}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Animated Bars Canvas */}
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex-1 flex flex-col justify-between min-h-[380px] shadow-lg">
-                  {/* Legend Strip */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-slate-800 text-xs font-mono">
-                    <div className="flex items-center gap-3">
-                      <span className="flex items-center gap-1">
-                        <span className="w-2.5 h-2.5 rounded bg-amber-400 inline-block" />
-                        <span className="text-slate-300">Pivot</span>
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <span className="w-2.5 h-2.5 rounded bg-emerald-400 inline-block" />
-                        <span className="text-slate-300">i (start)</span>
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <span className="w-2.5 h-2.5 rounded bg-rose-500 inline-block" />
-                        <span className="text-slate-300">j (end)</span>
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <span className="w-2.5 h-2.5 rounded bg-teal-500 inline-block" />
-                        <span className="text-slate-300">Sorted</span>
-                      </span>
-                    </div>
-
-                    <div className="px-2 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold">
-                      Pivot = {currentStep.pivotVal ?? '-'}
-                    </div>
+                    )}
                   </div>
 
-                  {/* Vertical Bars Stage */}
-                  <div className="my-auto py-4 flex items-end justify-center gap-2 sm:gap-3 px-1 overflow-x-auto select-none">
-                    {currentStep.array.map((value, idx) => {
-                      const inActiveSubarray =
-                        currentStep.lb !== null &&
-                        currentStep.ub !== null &&
-                        idx >= currentStep.lb &&
-                        idx <= currentStep.ub;
-                      const isPivot = idx === currentStep.pivotIdx;
-                      const isLockedSorted = currentStep.sortedIndices.includes(idx);
-                      const isSwapped = currentStep.swappedIndices.includes(idx);
-                      const isPointerI = idx === currentStep.i;
-                      const isPointerJ = idx === currentStep.j;
-
-                      const heightPx = Math.max(38, Math.round((value / maxBarValue) * 160));
-
-                      let barClasses = 'bg-slate-800/80 border-slate-700 text-slate-400 opacity-55';
-                      if (isLockedSorted && !isPivot) {
-                        barClasses = 'bg-gradient-to-t from-teal-600 to-emerald-500 border-emerald-300 text-white shadow-md opacity-100';
-                      } else if (isPivot) {
-                        barClasses = 'bg-gradient-to-t from-amber-600 to-amber-400 border-amber-200 text-slate-950 font-extrabold shadow-lg opacity-100 ring-2 ring-amber-400/60';
-                      } else if (isPointerI && isPointerJ) {
-                        barClasses = 'bg-gradient-to-t from-fuchsia-600 to-pink-500 border-pink-200 text-white font-bold shadow-md opacity-100';
-                      } else if (isPointerI) {
-                        barClasses = 'bg-gradient-to-t from-emerald-600 to-green-400 border-emerald-200 text-slate-950 font-bold shadow-md opacity-100';
-                      } else if (isPointerJ) {
-                        barClasses = 'bg-gradient-to-t from-rose-600 to-pink-500 border-rose-200 text-white font-bold shadow-md opacity-100';
-                      } else if (inActiveSubarray) {
-                        barClasses = 'bg-gradient-to-t from-indigo-600 to-indigo-500 border-indigo-400 text-white opacity-100';
-                      }
-
-                      return (
-                        <div
-                          key={idx}
-                          className={`flex flex-col items-center min-w-[42px] sm:min-w-[48px] transition-transform duration-300 ${
-                            isSwapped ? '-translate-y-3 scale-105' : ''
-                          }`}
-                        >
-                          {/* Top Tag: Pivot, lb, ub */}
-                          <div className="h-10 flex flex-col items-center justify-end gap-0.5 mb-1 text-[10px] font-mono">
-                            {isPivot && (
-                              <span className="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 font-extrabold shadow">
-                                Pivot
-                              </span>
-                            )}
-                            <div className="flex items-center gap-1">
-                              {idx === currentStep.lb && (
-                                <span className="px-1 rounded bg-sky-500/30 text-sky-300 font-bold">lb</span>
-                              )}
-                              {idx === currentStep.ub && (
-                                <span className="px-1 rounded bg-purple-500/30 text-purple-300 font-bold">ub</span>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Bar */}
-                          <div
-                            style={{ height: `${heightPx}px` }}
-                            className={`w-9 sm:w-10 rounded-t-xl border-t-2 border-x transition-all duration-300 flex items-start justify-center pt-1.5 text-xs sm:text-sm font-mono ${barClasses}`}
-                          >
-                            {value}
-                          </div>
-
-                          {/* Index Box */}
-                          <div
-                            className={`w-9 sm:w-10 py-1 border rounded-b-lg text-center font-mono text-[11px] ${
-                              inActiveSubarray
-                                ? 'bg-slate-950 border-indigo-500/50 text-indigo-300 font-semibold'
-                                : 'bg-slate-950 border-slate-800 text-slate-500'
-                            }`}
-                          >
-                            [{idx}]
-                          </div>
-
-                          {/* Bottom Pointer Badges */}
-                          <div className="h-10 flex flex-col items-center justify-start gap-0.5 mt-1 text-[11px] font-mono font-bold">
-                            {isPointerI && (
-                              <span className="px-1.5 py-0.5 rounded bg-emerald-500 text-slate-950 shadow">
-                                ↑ i={idx}
-                              </span>
-                            )}
-                            {isPointerJ && (
-                              <span className="px-1.5 py-0.5 rounded bg-rose-500 text-white shadow">
-                                ↑ j={idx}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Variable Cards */}
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2.5 border-t border-slate-800 text-xs font-mono">
-                    <div className="bg-slate-950 border border-amber-500/30 rounded-xl p-2 flex items-center justify-between">
-                      <span className="text-amber-400 font-bold">Pivot</span>
-                      <span className="text-white font-extrabold">{currentStep.pivotVal ?? '-'}</span>
-                    </div>
-                    <div className="bg-slate-950 border border-sky-500/30 rounded-xl p-2 flex items-center justify-between">
-                      <span className="text-sky-400 font-bold">lb</span>
-                      <span className="text-white font-extrabold">{currentStep.lb ?? '-'}</span>
-                    </div>
-                    <div className="bg-slate-950 border border-purple-500/30 rounded-xl p-2 flex items-center justify-between">
-                      <span className="text-purple-400 font-bold">ub</span>
-                      <span className="text-white font-extrabold">{currentStep.ub ?? '-'}</span>
-                    </div>
-                    <div className="bg-slate-950 border border-emerald-500/30 rounded-xl p-2 flex items-center justify-between">
-                      <span className="text-emerald-400 font-bold">i</span>
-                      <span className="text-white font-extrabold">{currentStep.i ?? '-'}</span>
-                    </div>
-                    <div className="bg-slate-950 border border-rose-500/30 rounded-xl p-2 flex items-center justify-between col-span-2 sm:col-span-1">
-                      <span className="text-rose-400 font-bold">j</span>
-                      <span className="text-white font-extrabold">{currentStep.j ?? '-'}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 2 Quick Swap Rules */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                  <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex items-start gap-2">
-                    <div className="w-5 h-5 rounded bg-sky-500/20 text-sky-300 font-bold flex items-center justify-center shrink-0">1</div>
-                    <div>
-                      <div className="font-mono font-bold text-sky-300">Rule 1: If i &lt; j → Swap arr[i] ↔ arr[j]</div>
-                      <div className="text-slate-400 text-[11px]">{lang === 'bn' ? 'পয়েন্টার দুটি ক্রস না করলে অদলবদল হয়।' : 'Pointers not crossed; swap elements.'}</div>
-                    </div>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-slate-900 border border-amber-500/30 flex items-start gap-2">
-                    <div className="w-5 h-5 rounded bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center shrink-0">2</div>
-                    <div>
-                      <div className="font-mono font-bold text-amber-300">Rule 2: If i &gt;= j → Swap arr[lb] ↔ arr[j]</div>
-                      <div className="text-slate-400 text-[11px]">{lang === 'bn' ? 'পয়েন্টার ক্রস করলে Pivot চূড়ান্ত ঘরে বসে।' : 'Pointers crossed; Pivot locks at index j.'}</div>
-                    </div>
+                  {/* Check / Formula box */}
+                  <div className="bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 shrink-0 font-mono text-center self-start">
+                    <div className="text-[10px] text-slate-500 uppercase">CHECK</div>
+                    <div className="text-xs font-bold text-amber-400">{currentStep.formula}</div>
                   </div>
                 </div>
               </div>
 
-              {/* RIGHT 5 COLS: LIVE SYNCHRONIZED CODE + RECURSION CALL STACK */}
-              <div className="lg:col-span-5 flex flex-col gap-4">
+              {/* Right Box: The 2 Rules (Side by Side with Narrator!) (5 cols) */}
+              <div className="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-md flex flex-col justify-between gap-2">
+                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-start gap-2.5">
+                  <div className="w-5 h-5 rounded bg-sky-500/20 text-sky-400 font-bold text-xs flex items-center justify-center shrink-0">1</div>
+                  <div>
+                    <div className="font-mono font-bold text-sky-400 text-xs">
+                      Rule 1: If i &lt; j → Swap arr[i] ↔ arr[j]
+                    </div>
+                    <div className="text-slate-400 text-[11px] mt-0.5 leading-snug">
+                      {lang === 'bn' ? 'পয়েন্টার ক্রস করেনি; সংখ্যা দুটি অদলবদল হয়।' : 'Pointers not crossed; swap elements.'}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-slate-950 border border-amber-500/30 flex items-start gap-2.5">
+                  <div className="w-5 h-5 rounded bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0">2</div>
+                  <div>
+                    <div className="font-mono font-bold text-amber-400 text-xs">
+                      Rule 2: If i &gt;= j → Swap arr[lb] ↔ arr[j]
+                    </div>
+                    <div className="text-slate-400 text-[11px] mt-0.5 leading-snug">
+                      {lang === 'bn' ? 'পয়েন্টার ক্রস করেছে; Pivot লক হয়ে গেল।' : 'Pointers crossed; Pivot locks at index j.'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ============================================================ */}
+            {/* MAIN 12-COLUMN STAGE & LIVE TRACER                           */}
+            {/* ============================================================ */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+              {/* LEFT 7 COLS: ANIMATED BARS CANVAS */}
+              <div className="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-col justify-between min-h-[300px] shadow-md">
+                {/* Legend Strip */}
+                <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-800 text-[11px] font-mono">
+                  <div className="flex items-center gap-3">
+                    <span className="flex items-center gap-1">
+                      <span className="w-2.5 h-2.5 rounded bg-amber-400 inline-block" />
+                      <span className="text-slate-300">Pivot</span>
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="w-2.5 h-2.5 rounded bg-emerald-400 inline-block" />
+                      <span className="text-slate-300">i (start)</span>
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="w-2.5 h-2.5 rounded bg-rose-500 inline-block" />
+                      <span className="text-slate-300">j (end)</span>
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="w-2.5 h-2.5 rounded bg-teal-500 inline-block" />
+                      <span className="text-slate-300">Sorted</span>
+                    </span>
+                  </div>
+
+                  <div className="px-2 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold">
+                    Pivot = {currentStep.pivotVal ?? '-'}
+                  </div>
+                </div>
+
+                {/* Vertical Bars Stage */}
+                <div className="my-auto py-3 flex items-end justify-center gap-2 sm:gap-3 px-1 overflow-x-auto select-none">
+                  {currentStep.array.map((value, idx) => {
+                    const inActiveSubarray =
+                      currentStep.lb !== null &&
+                      currentStep.ub !== null &&
+                      idx >= currentStep.lb &&
+                      idx <= currentStep.ub;
+                    const isPivot = idx === currentStep.pivotIdx;
+                    const isLockedSorted = currentStep.sortedIndices.includes(idx);
+                    const isSwapped = currentStep.swappedIndices.includes(idx);
+                    const isPointerI = idx === currentStep.i;
+                    const isPointerJ = idx === currentStep.j;
+
+                    const heightPx = Math.max(34, Math.round((value / maxBarValue) * 135));
+
+                    let barClasses = 'bg-slate-800/80 border-slate-700 text-slate-400 opacity-55';
+                    if (isLockedSorted && !isPivot) {
+                      barClasses = 'bg-gradient-to-t from-teal-600 to-emerald-500 border-emerald-300 text-white shadow-md opacity-100';
+                    } else if (isPivot) {
+                      barClasses = 'bg-gradient-to-t from-amber-600 to-amber-400 border-amber-200 text-slate-950 font-extrabold shadow-lg opacity-100 ring-2 ring-amber-400/60';
+                    } else if (isPointerI && isPointerJ) {
+                      barClasses = 'bg-gradient-to-t from-fuchsia-600 to-pink-500 border-pink-200 text-white font-bold shadow-md opacity-100';
+                    } else if (isPointerI) {
+                      barClasses = 'bg-gradient-to-t from-emerald-600 to-green-400 border-emerald-200 text-slate-950 font-bold shadow-md opacity-100';
+                    } else if (isPointerJ) {
+                      barClasses = 'bg-gradient-to-t from-rose-600 to-pink-500 border-rose-200 text-white font-bold shadow-md opacity-100';
+                    } else if (inActiveSubarray) {
+                      barClasses = 'bg-gradient-to-t from-indigo-600 to-indigo-500 border-indigo-400 text-white opacity-100';
+                    }
+
+                    return (
+                      <div
+                        key={idx}
+                        className={`flex flex-col items-center min-w-[38px] sm:min-w-[44px] transition-transform duration-300 ${
+                          isSwapped ? '-translate-y-2 scale-105' : ''
+                        }`}
+                      >
+                        {/* Top Tag: Pivot, lb, ub */}
+                        <div className="h-8 flex flex-col items-center justify-end gap-0.5 mb-1 text-[10px] font-mono">
+                          {isPivot && (
+                            <span className="px-1 py-0.5 rounded bg-amber-400 text-slate-950 font-extrabold text-[9px] shadow">
+                              Pivot
+                            </span>
+                          )}
+                          <div className="flex items-center gap-0.5">
+                            {idx === currentStep.lb && (
+                              <span className="px-1 rounded bg-sky-500/30 text-sky-300 font-bold text-[9px]">lb</span>
+                            )}
+                            {idx === currentStep.ub && (
+                              <span className="px-1 rounded bg-purple-500/30 text-purple-300 font-bold text-[9px]">ub</span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Bar */}
+                        <div
+                          style={{ height: `${heightPx}px` }}
+                          className={`w-8 sm:w-10 rounded-t-xl border-t-2 border-x transition-all duration-300 flex items-start justify-center pt-1 text-xs font-mono font-bold ${barClasses}`}
+                        >
+                          {value}
+                        </div>
+
+                        {/* Index Box */}
+                        <div
+                          className={`w-8 sm:w-10 py-0.5 border rounded-b-lg text-center font-mono text-[10px] ${
+                            inActiveSubarray
+                              ? 'bg-slate-950 border-indigo-500/50 text-indigo-300 font-semibold'
+                              : 'bg-slate-950 border-slate-800 text-slate-500'
+                          }`}
+                        >
+                          [{idx}]
+                        </div>
+
+                        {/* Bottom Pointer Badges */}
+                        <div className="h-8 flex flex-col items-center justify-start gap-0.5 mt-1 text-[10px] font-mono font-bold">
+                          {isPointerI && (
+                            <span className="px-1 py-0.5 rounded bg-emerald-500 text-slate-950 shadow">
+                              ↑ i={idx}
+                            </span>
+                          )}
+                          {isPointerJ && (
+                            <span className="px-1 py-0.5 rounded bg-rose-500 text-white shadow">
+                              ↑ j={idx}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Variable Cards */}
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 pt-2 border-t border-slate-800 text-xs font-mono">
+                  <div className="bg-slate-950 border border-amber-500/30 rounded-xl p-1.5 flex items-center justify-between">
+                    <span className="text-amber-400 font-bold text-[11px]">Pivot</span>
+                    <span className="text-white font-extrabold">{currentStep.pivotVal ?? '-'}</span>
+                  </div>
+                  <div className="bg-slate-950 border border-sky-500/30 rounded-xl p-1.5 flex items-center justify-between">
+                    <span className="text-sky-400 font-bold text-[11px]">lb</span>
+                    <span className="text-white font-extrabold">{currentStep.lb ?? '-'}</span>
+                  </div>
+                  <div className="bg-slate-950 border border-purple-500/30 rounded-xl p-1.5 flex items-center justify-between">
+                    <span className="text-purple-400 font-bold text-[11px]">ub</span>
+                    <span className="text-white font-extrabold">{currentStep.ub ?? '-'}</span>
+                  </div>
+                  <div className="bg-slate-950 border border-emerald-500/30 rounded-xl p-1.5 flex items-center justify-between">
+                    <span className="text-emerald-400 font-bold text-[11px]">i</span>
+                    <span className="text-white font-extrabold">{currentStep.i ?? '-'}</span>
+                  </div>
+                  <div className="bg-slate-950 border border-rose-500/30 rounded-xl p-1.5 flex items-center justify-between col-span-2 sm:col-span-1">
+                    <span className="text-rose-400 font-bold text-[11px]">j</span>
+                    <span className="text-white font-extrabold">{currentStep.j ?? '-'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* RIGHT 5 COLS: LIVE SYNCHRONIZED CODE + RECURSION STACK */}
+              <div className="lg:col-span-5 flex flex-col gap-3">
                 {/* Live Synchronized Code */}
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
-                  <div className="bg-slate-950 px-3.5 py-2 border-b border-slate-800 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-md">
+                  <div className="bg-slate-950 px-3 py-1.5 border-b border-slate-800 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
                       <Code2 className="w-3.5 h-3.5 text-indigo-400" />
                       <span className="text-xs font-mono font-bold text-slate-200">
-                        {lang === 'bn' ? 'সিঙ্ক্রোনাইজড কোড' : 'Synchronized Code'}
+                        {lang === 'bn' ? 'সিঙ্ক্রোনাইজড কোড' : 'Live Code Tracer'}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1 bg-slate-900 p-0.5 rounded-lg border border-slate-800 text-xs font-mono">
+                    <div className="flex items-center gap-1 bg-slate-900 p-0.5 rounded-lg border border-slate-800 text-[11px] font-mono">
                       {[
                         { id: 'cpp', label: 'C++' },
                         { id: 'python', label: 'Python' }
@@ -1386,19 +1453,19 @@ export default function Quick_sort() {
                     </div>
                   </div>
 
-                  <div className="p-2.5 font-mono text-xs leading-5 overflow-x-auto bg-slate-950/60 select-none max-h-[300px]">
+                  <div className="p-2 font-mono text-xs leading-5 overflow-x-auto bg-slate-950/60 select-none max-h-[190px]">
                     {TRACER_CODE[tracerLang].map((item) => {
                       const isActive = item.line === currentStep.codeLine;
                       return (
                         <div
                           key={item.line}
-                          className={`px-2 py-0.5 rounded flex items-center gap-2 ${
+                          className={`px-1.5 py-0.5 rounded flex items-center gap-2 ${
                             isActive
                               ? 'bg-indigo-500/25 border-l-4 border-indigo-400 text-white font-bold'
                               : 'text-slate-400'
                           }`}
                         >
-                          <span className="w-4 text-right text-[11px] text-slate-600 select-none">
+                          <span className="w-4 text-right text-[10px] text-slate-600 select-none">
                             {item.line}
                           </span>
                           <span className="whitespace-pre">{item.text}</span>
@@ -1409,12 +1476,12 @@ export default function Quick_sort() {
                 </div>
 
                 {/* Recursion Stack Card */}
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 shadow-lg flex-1 flex flex-col justify-between">
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-2.5 shadow-md flex-1 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center justify-between mb-2.5">
-                      <h3 className="text-xs font-mono uppercase text-slate-400 flex items-center gap-1.5 font-bold">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <h3 className="text-[11px] font-mono uppercase text-slate-400 flex items-center gap-1.5 font-bold">
                         <Layers className="w-3.5 h-3.5 text-indigo-400" />
-                        <span>{lang === 'bn' ? 'রিকার্শন কল স্ট্যাক' : 'Recursion Stack'}</span>
+                        <span>{lang === 'bn' ? 'রিকার্শন স্ট্যাক' : 'Call Stack'}</span>
                       </h3>
                       <div className="flex items-center gap-2 text-xs font-mono">
                         <span className="text-sky-400">{lang === 'bn' ? 'তুলনা: ' : 'Comp: '}<strong>{currentStep.comparisons}</strong></span>
@@ -1422,10 +1489,10 @@ export default function Quick_sort() {
                       </div>
                     </div>
 
-                    <div className="space-y-1.5 max-h-36 overflow-y-auto font-mono text-xs pr-1">
+                    <div className="space-y-1 max-h-24 overflow-y-auto font-mono text-xs pr-1">
                       {currentStep.callStack.length === 0 ? (
-                        <div className="text-slate-500 italic py-3 text-center bg-slate-950/50 rounded-xl border border-slate-800/60">
-                          {lang === 'bn' ? 'কল স্ট্যাক খালি (প্রস্তুত)' : 'Stack empty (Ready)'}
+                        <div className="text-slate-500 italic py-2 text-center bg-slate-950/50 rounded-lg border border-slate-800/60 text-[11px]">
+                          {lang === 'bn' ? 'কল স্ট্যাক খালি' : 'Stack empty'}
                         </div>
                       ) : (
                         [...currentStep.callStack].reverse().map((frame, index) => {
@@ -1433,7 +1500,7 @@ export default function Quick_sort() {
                           return (
                             <div
                               key={`${frame.fn}-${index}`}
-                              className={`px-2.5 py-1.5 rounded-lg border flex items-center justify-between ${
+                              className={`px-2 py-1 rounded-lg border flex items-center justify-between text-xs ${
                                 isTop
                                   ? 'bg-indigo-950/60 border-indigo-500/50 text-indigo-200 font-bold'
                                   : 'bg-slate-950 border-slate-800 text-slate-400'
@@ -1441,7 +1508,7 @@ export default function Quick_sort() {
                             >
                               <span>{frame.fn}</span>
                               {isTop && (
-                                <span className="text-[10px] bg-indigo-500/30 text-indigo-300 px-1.5 py-0.5 rounded">
+                                <span className="text-[9px] bg-indigo-500/30 text-indigo-300 px-1 py-0.5 rounded">
                                   Active
                                 </span>
                               )}
@@ -1452,14 +1519,14 @@ export default function Quick_sort() {
                     </div>
                   </div>
 
-                  <div className="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                  <div className="mt-2 pt-1.5 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
                     <span>Keys: Space / ← / → / R</span>
                     <button
                       onClick={() => setActiveTab('code')}
                       className="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1"
                     >
                       <span>{lang === 'bn' ? 'কোড দেখুন' : 'View Code'}</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
+                      <ChevronRight className="w-3 h-3" />
                     </button>
                   </div>
                 </div>
@@ -1472,34 +1539,34 @@ export default function Quick_sort() {
         {/* TAB 2: ZERO-TO-HERO GUIDE & QUIZ                                 */}
         {/* ================================================================ */}
         {activeTab === 'lesson' && (
-          <div className="space-y-5">
-            {/* 4 Simple Steps to Quick Sort */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
-              <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+          <div className="space-y-4">
+            {/* 4 Simple Steps */}
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
+              <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-indigo-400" />
                 <span>{lang === 'bn' ? '৪টি সহজ ধাপে কুইক সর্ট বুঝুন' : 'Understand Quick Sort in 4 Easy Steps'}</span>
               </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-                <div className="p-3.5 rounded-xl bg-slate-950 border border-amber-500/30 space-y-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
+                <div className="p-3 rounded-xl bg-slate-950 border border-amber-500/30 space-y-1">
                   <div className="font-bold text-amber-400">{lang === 'bn' ? '১. পিভট (Pivot) ধরা' : '1. Pick Pivot'}</div>
                   <p className="text-slate-300 leading-relaxed">
                     {lang === 'bn' ? 'অ্যারের প্রথম সংখ্যা arr[lb]-কে পিভট হিসেবে বেছে নেওয়া হয়।' : 'First element arr[lb] is picked as Pivot.'}
                   </p>
                 </div>
-                <div className="p-3.5 rounded-xl bg-slate-950 border border-emerald-500/30 space-y-1">
+                <div className="p-3 rounded-xl bg-slate-950 border border-emerald-500/30 space-y-1">
                   <div className="font-bold text-emerald-400">{lang === 'bn' ? '২. পয়েন্টার চালানো' : '2. Scan Pointers'}</div>
                   <p className="text-slate-300 leading-relaxed">
                     {lang === 'bn' ? 'i ডানে যায় বড় সংখ্যা খুঁজতে, j বামে আসে ছোট সংখ্যা খুঁজতে।' : 'i moves right for > pivot, j moves left for <= pivot.'}
                   </p>
                 </div>
-                <div className="p-3.5 rounded-xl bg-slate-950 border border-sky-500/30 space-y-1">
+                <div className="p-3 rounded-xl bg-slate-950 border border-sky-500/30 space-y-1">
                   <div className="font-bold text-sky-400">{lang === 'bn' ? '৩. অদলবদল (Swap)' : '3. Swap'}</div>
                   <p className="text-slate-300 leading-relaxed">
                     {lang === 'bn' ? 'i < j হলে arr[i] ও arr[j] অদলবদল হয়।' : 'If i < j, swap arr[i] and arr[j].'}
                   </p>
                 </div>
-                <div className="p-3.5 rounded-xl bg-slate-950 border border-purple-500/30 space-y-1">
+                <div className="p-3 rounded-xl bg-slate-950 border border-purple-500/30 space-y-1">
                   <div className="font-bold text-purple-400">{lang === 'bn' ? '৪. পিভট লক' : '4. Lock Pivot'}</div>
                   <p className="text-slate-300 leading-relaxed">
                     {lang === 'bn' ? 'i >= j হলে পিভট-কে arr[j]-এর সাথে swap করে লক করা হয়।' : 'When i >= j, swap Pivot with arr[j] to lock it.'}
@@ -1509,24 +1576,24 @@ export default function Quick_sort() {
             </div>
 
             {/* Time & Space Complexity */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg">
-              <h3 className="text-sm font-bold text-white mb-2.5">
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 shadow-md">
+              <h3 className="text-xs sm:text-sm font-bold text-white mb-2">
                 {lang === 'bn' ? 'টাইম ও স্পেস কমপ্লেক্সিটি' : 'Time & Space Complexity'}
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs font-mono">
-                <div className="p-2.5 bg-slate-950 border border-slate-800 rounded-xl">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
+                <div className="p-2 bg-slate-950 border border-slate-800 rounded-xl">
                   <div className="text-slate-400 text-[10px]">Best Case</div>
                   <div className="text-emerald-400 font-bold text-sm">O(n log n)</div>
                 </div>
-                <div className="p-2.5 bg-slate-950 border border-slate-800 rounded-xl">
+                <div className="p-2 bg-slate-950 border border-slate-800 rounded-xl">
                   <div className="text-slate-400 text-[10px]">Average Case</div>
                   <div className="text-sky-400 font-bold text-sm">O(n log n)</div>
                 </div>
-                <div className="p-2.5 bg-slate-950 border border-slate-800 rounded-xl">
+                <div className="p-2 bg-slate-950 border border-slate-800 rounded-xl">
                   <div className="text-slate-400 text-[10px]">Worst Case</div>
                   <div className="text-rose-400 font-bold text-sm">O(n²)</div>
                 </div>
-                <div className="p-2.5 bg-slate-950 border border-slate-800 rounded-xl">
+                <div className="p-2 bg-slate-950 border border-slate-800 rounded-xl">
                   <div className="text-slate-400 text-[10px]">Space</div>
                   <div className="text-purple-400 font-bold text-sm">O(log n)</div>
                 </div>
@@ -1534,9 +1601,9 @@ export default function Quick_sort() {
             </div>
 
             {/* Interactive Quiz */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-3">
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+                <h3 className="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
                   <Award className="w-4 h-4 text-emerald-400" />
                   <span>{lang === 'bn' ? 'ইন্টারঅ্যাক্টিভ কুইজ' : 'Interactive Quiz'}</span>
                 </h3>
@@ -1545,7 +1612,7 @@ export default function Quick_sort() {
                 </span>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {QUIZ_QUESTIONS.map((q, qIdx) => {
                   const selected = quizAnswers[q.id];
                   const isAnswered = selected !== undefined;
@@ -1555,7 +1622,7 @@ export default function Quick_sort() {
                   const explanationText = lang === 'bn' ? q.explanationBn : q.explanation;
 
                   return (
-                    <div key={q.id} className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                    <div key={q.id} className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
                       <div className="text-xs font-semibold text-white">Q{qIdx + 1}. {questionText}</div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                         {optionsList.map((opt, oIdx) => {
@@ -1582,7 +1649,7 @@ export default function Quick_sort() {
                         })}
                       </div>
                       {isAnswered && (
-                        <div className={`text-xs p-2 rounded-lg ${isCorrect ? 'bg-emerald-500/10 text-emerald-300' : 'bg-amber-500/10 text-amber-300'}`}>
+                        <div className={`text-xs p-1.5 rounded-lg ${isCorrect ? 'bg-emerald-500/10 text-emerald-300' : 'bg-amber-500/10 text-amber-300'}`}>
                           {explanationText}
                         </div>
                       )}
@@ -1598,9 +1665,9 @@ export default function Quick_sort() {
         {/* TAB 3: CODE IMPLEMENTATIONS (C++, PYTHON, C#, JAVA, C, JS)       */}
         {/* ================================================================ */}
         {activeTab === 'code' && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {/* Top Language Switcher Bar */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-md">
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-2.5 sm:p-3 flex flex-wrap items-center justify-between gap-2.5 shadow-md">
               <div className="flex items-center gap-2">
                 <FolderCode className="w-4 h-4 text-emerald-400" />
                 <span className="text-xs sm:text-sm font-bold text-white">
@@ -1621,9 +1688,9 @@ export default function Quick_sort() {
                   <button
                     key={item.id}
                     onClick={() => setSelectedCodeLang(item.id)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold font-mono transition ${
+                    className={`px-3 py-1 rounded-xl text-xs font-bold font-mono transition ${
                       selectedCodeLang === item.id
-                        ? 'bg-indigo-600 text-white shadow-md'
+                        ? 'bg-indigo-600 text-white shadow-sm'
                         : 'bg-slate-950 text-slate-300 border border-slate-800 hover:text-white'
                     }`}
                   >
@@ -1634,8 +1701,8 @@ export default function Quick_sort() {
             </div>
 
             {/* Code Display Card with Header & Copy Button */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-              <div className="bg-slate-950 px-4 py-2.5 border-b border-slate-800 flex items-center justify-between">
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
+              <div className="bg-slate-950 px-3.5 py-2 border-b border-slate-800 flex items-center justify-between">
                 <div className="flex items-center gap-2 font-mono text-xs font-bold text-emerald-400">
                   <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                     {FULL_LANGUAGE_CODES[selectedCodeLang].name}
@@ -1649,7 +1716,7 @@ export default function Quick_sort() {
                   </span>
                   <button
                     onClick={() => handleCopyCode(FULL_LANGUAGE_CODES[selectedCodeLang].code)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-mono flex items-center gap-1.5 transition"
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-mono flex items-center gap-1 transition"
                   >
                     {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copiedCode ? (lang === 'bn' ? 'কপি হয়েছে' : 'Copied') : (lang === 'bn' ? 'কপি' : 'Copy')}</span>
@@ -1658,7 +1725,7 @@ export default function Quick_sort() {
               </div>
 
               {/* Formatted Code Block */}
-              <pre className="p-4 text-xs font-mono text-slate-200 overflow-x-auto leading-relaxed bg-[#050811] max-h-[550px]">
+              <pre className="p-3.5 text-xs font-mono text-slate-200 overflow-x-auto leading-relaxed bg-[#050811] max-h-[500px]">
                 <code>{FULL_LANGUAGE_CODES[selectedCodeLang].code}</code>
               </pre>
             </div>
@@ -1668,7 +1735,7 @@ export default function Quick_sort() {
 
       {/* Floating Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-4 right-4 z-50 bg-slate-900 border border-indigo-500/50 text-white px-3.5 py-2 rounded-xl shadow-xl flex items-center gap-2 text-xs font-medium">
+        <div className="fixed bottom-3 right-3 z-50 bg-slate-900 border border-indigo-500/50 text-white px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-2 text-xs font-medium">
           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
